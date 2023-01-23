@@ -116,7 +116,7 @@ var { withAuth } = (0, import_auth.createAuth)({
     fields: ["name", "email", "password"]
   }
 });
-var sessionMaxAge = 60 * 60 * 24 * 30;
+var sessionMaxAge = 0;
 var session = (0, import_session.statelessSessions)({
   maxAge: sessionMaxAge,
   secret: sessionSecret
