@@ -1,4 +1,15 @@
 node_modules
-.keystone/admin
-keystone.db
 *.log
+
+# Env variables
+.env
+
+# IDEs
+.vscode/
+.idea/
+
+# Keystone
+.keystone/
+keystone.db
+schema.prisma
+schema.graphql
