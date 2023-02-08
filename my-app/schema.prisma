@@ -22,12 +22,19 @@ model User {
 }
 
 model Todo {
-  id          String  @id @default(cuid())
-  title       String  @default("")
-  description Json    @default("[{\"type\":\"paragraph\",\"children\":[{\"text\":\"\"}]}]")
-  priority    Int     @default(1)
-  author      User?   @relation("Todo_author", fields: [authorId], references: [id])
-  authorId    String? @map("author")
+  id             String  @id @default(cuid())
+  title          String  @default("")
+  description    Json    @default("[{\"type\":\"paragraph\",\"children\":[{\"text\":\"\"}]}]")
+  priority       Int     @default(1)
+  author         User?   @relation("Todo_author", fields: [authorId], references: [id])
+  authorId       String? @map("author")
+  from_Tag_todos Tag[]   @relation("Tag_todos")
 
   @@index([authorId])
+}
+
+model Tag {
+  id    String @id @default(cuid())
+  Name  String @unique @default("")
+  todos Todo[] @relation("Tag_todos")
 }

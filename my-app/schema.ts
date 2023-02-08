@@ -1,4 +1,4 @@
-import { list } from '@keystone-6/core';
+import { config, list } from '@keystone-6/core';
 import { allowAll } from '@keystone-6/core/access';
 
 // see https://keystonejs.com/docs/fields/overview for the full list of fields
@@ -12,10 +12,11 @@ import {
 } from '@keystone-6/core/fields';
 import { document } from '@keystone-6/fields-document';
 import type { Lists } from '.keystone/types';
+import { fields } from '@keystone-6/core/dist/declarations/src/types/schema/schema-api-with-context';
 
 export const lists: Lists = {
   User: list({
-     access: allowAll,
+    access: allowAll,
 
     // this is the fields for our User list
     fields: {
@@ -40,9 +41,9 @@ export const lists: Lists = {
         // this sets the timestamp to Date.now() when the user is first created
         defaultValue: { kind: 'now' },
       }),
-      todos: relationship({ 
-        ref: 'Todo.author', 
-        many: true 
+      todos: relationship({
+        ref: 'Todo.author',
+        many: true
       }),
     },
   }),
@@ -70,20 +71,51 @@ export const lists: Lists = {
           { label: 'Low', value: 1 },
           { label: 'Normal', value: 2 },
           { label: 'High', value: 3 },
+          { label: 'Very High', value: 4 },
           /* ... */
         ],
         defaultValue: 1,
         validation: { isRequired: true, },
         ui: { displayMode: 'radio' },
       }),
-      author: relationship({ 
-        ref: 'User.todos', 
+      author: relationship({
+         ui: {
+          displayMode: 'cards',
+          cardFields: ['name', 'email'],
+          inlineEdit: { fields: ['name', 'email'] },
+          linkToItem: true,
+          inlineCreate: { fields: ['name', 'email'] },
+        },
+        access: allowAll,
+        ref: 'User.todos',
         many: false,
-        hooks: ({
-        }),
+        hooks: {
+          afterOperation: ({ operation, item }) => {
+            if (operation === 'create') {
+             item.authorId = null;
+            }
+            if (operation === 'update') {
+
+            }
+          }
+        },
+      })
+    }
+  }),
+  Tag: list({
+    access: allowAll,
+    fields: {
+
+      Name: text({
+        validation: { isRequired: true },
+        isIndexed: 'unique',
       }),
 
-    },
+      todos: relationship({
+        access: allowAll,
+        ref: 'Todo',
+        many: true
+      }),
+    }
   }),
-
-};
+}

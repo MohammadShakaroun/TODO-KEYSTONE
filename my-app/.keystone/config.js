@@ -77,15 +77,47 @@ var lists = {
         options: [
           { label: "Low", value: 1 },
           { label: "Normal", value: 2 },
-          { label: "High", value: 3 }
+          { label: "High", value: 3 },
+          { label: "Very High", value: 4 }
         ],
         defaultValue: 1,
         validation: { isRequired: true },
         ui: { displayMode: "radio" }
       }),
       author: (0, import_fields.relationship)({
+        ui: {
+          displayMode: "cards",
+          cardFields: ["name", "email"],
+          inlineEdit: { fields: ["name", "email"] },
+          linkToItem: true,
+          inlineCreate: { fields: ["name", "email"] }
+        },
+        access: import_access.allowAll,
         ref: "User.todos",
-        many: false
+        many: false,
+        hooks: {
+          afterOperation: ({ operation, item }) => {
+            if (operation === "create") {
+              item.authorId = null;
+            }
+            if (operation === "update") {
+            }
+          }
+        }
+      })
+    }
+  }),
+  Tag: (0, import_core.list)({
+    access: import_access.allowAll,
+    fields: {
+      Name: (0, import_fields.text)({
+        validation: { isRequired: true },
+        isIndexed: "unique"
+      }),
+      todos: (0, import_fields.relationship)({
+        access: import_access.allowAll,
+        ref: "Todo",
+        many: true
       })
     }
   })
